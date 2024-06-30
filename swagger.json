@@ -1,0 +1,795 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Social Network API",
+        "version": "1.0.0",
+        "description": "API documentation for the Social Network project"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:4000/api",
+            "description": "Local Server"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "apiKey": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
+            }
+        },
+        "schemas": {
+            "User": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "mobileNo",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "mobileNo": {
+                        "type": "string",
+                        "unique": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "unique": true
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "name": "John Doe",
+                    "mobileNo": "1234567890",
+                    "email": "johndoe@example.com",
+                    "password": "password123"
+                }
+            },
+            "Login": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "email": "johndoe@example.com",
+                    "password": "password123"
+                }
+            },
+            "Token": {
+                "type": "object",
+                "properties": {
+                    "accessToken": {
+                        "type": "string"
+                    },
+                    "refreshToken": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "accessToken": "yourAccessToken",
+                    "refreshToken": "yourRefreshToken"
+                }
+            }
+        },
+        "responses": {
+            "SuccessResponse": {
+                "description": "Successful response",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "type": "object"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "InvalidResponse": {
+                "description": "Invalid response",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "type": "object"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        {
+            "apiKey": []
+        }
+    ],
+    "paths": {
+        "/user/signup": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Create a new user",
+                "description": "Create a new user",
+                "requestBody": {
+                    "description": "User data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Login a user",
+                "description": "Login a user",
+                "requestBody": {
+                    "description": "User login data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Login"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/user/refresh-token": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Refresh token",
+                "description": "Refresh token",
+                "requestBody": {
+                    "description": "Refresh token data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "refreshToken": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/user/logout": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Logout user",
+                "description": "Logout user",
+                "requestBody": {
+                    "description": "Logout data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "token": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/user/update": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update user",
+                "description": "Update user",
+                "requestBody": {
+                    "description": "User update data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/user/delete": {
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete user",
+                "description": "Delete user",
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/user/all": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get list of users",
+                "description": "Get list of users",
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/users/search": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Search users by name",
+                "description": "Search users by name",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Name of the user to search"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/user/follow": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Follow user",
+                "description": "Follow user",
+                "requestBody": {
+                    "description": "Follow data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "followerId": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/discussion/create": {
+            "post": {
+                "tags": [
+                    "Discussion"
+                ],
+                "summary": "Create discussion",
+                "description": "Create discussion",
+                "requestBody": {
+                    "description": "Discussion data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "text": {
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "type": "string"
+                                    },
+                                    "hashtags": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "createdOn": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/discussion/update/{discussionId}": {
+            "put": {
+                "tags": [
+                    "Discussion"
+                ],
+                "summary": "Update discussion",
+                "description": "Update discussion",
+                "parameters": [
+                    {
+                        "name": "discussionId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "ID of the discussion to update"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Discussion update data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "text": {
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "type": "string"
+                                    },
+                                    "hashtags": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/discussion/delete/{discussionId}": {
+            "delete": {
+                "tags": [
+                    "Discussion"
+                ],
+                "summary": "Delete discussion",
+                "description": "Delete discussion",
+                "parameters": [
+                    {
+                        "name": "discussionId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "ID of the discussion to delete"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/discussion/list": {
+            "get": {
+                "tags": [
+                    "Discussion"
+                ],
+                "summary": "Get list of discussions",
+                "description": "Get list of discussions",
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/discussion/search": {
+            "get": {
+                "tags": [
+                    "Discussion"
+                ],
+                "summary": "Search discussions by text",
+                "description": "Search discussions by text",
+                "parameters": [
+                    {
+                        "name": "text",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Text to search in discussions"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/discussion/tags": {
+            "get": {
+                "tags": [
+                    "Discussion"
+                ],
+                "summary": "Get discussions by hashtags",
+                "description": "Get discussions by hashtags",
+                "parameters": [
+                    {
+                        "name": "tags",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": "Hashtags to filter discussions"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/discussion/comment/{discussionId}": {
+            "post": {
+                "tags": [
+                    "Discussion"
+                ],
+                "summary": "Comment on discussion",
+                "description": "Comment on discussion",
+                "parameters": [
+                    {
+                        "name": "discussionId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "ID of the discussion to comment on"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Comment data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "text": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/discussion/like/{discussionId}": {
+            "post": {
+                "tags": [
+                    "Discussion"
+                ],
+                "summary": "Like a discussion",
+                "description": "Like a discussion",
+                "parameters": [
+                    {
+                        "name": "discussionId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "ID of the discussion to like"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/discussion/like/{discussionId}/{commentId}": {
+            "post": {
+                "tags": [
+                    "Discussion"
+                ],
+                "summary": "Like a comment on a discussion",
+                "description": "Like a comment on a discussion",
+                "parameters": [
+                    {
+                        "name": "discussionId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "ID of the discussion containing the comment"
+                    },
+                    {
+                        "name": "commentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "ID of the comment to like"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/discussion/comment/{discussionId}/{commentId}": {
+            "put": {
+                "tags": [
+                    "Discussion"
+                ],
+                "summary": "Update a comment on a discussion",
+                "description": "Update a comment on a discussion",
+                "parameters": [
+                    {
+                        "name": "discussionId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "ID of the discussion containing the comment"
+                    },
+                    {
+                        "name": "commentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "ID of the comment to update"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Updated comment data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "text": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        },
+        "/discussion/comment/{discussionId}/{commentId}": {
+            "delete": {
+                "tags": [
+                    "Discussion"
+                ],
+                "summary": "Delete a comment on a discussion",
+                "description": "Delete a comment on a discussion",
+                "parameters": [
+                    {
+                        "name": "discussionId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "ID of the discussion containing the comment"
+                    },
+                    {
+                        "name": "commentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "ID of the comment to delete"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/SuccessResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InvalidResponse"
+                    }
+                }
+            }
+        }
+    }
+}
